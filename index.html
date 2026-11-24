@@ -364,7 +364,7 @@ main section.show{animation:pop .25s ease-out}
   </div>
   <div class="address">
     <label>Address</label>
-    <div class="field sunken"><img src="img/icon.png" alt=""><span id="url">http://www.allcocktailsarebeautiful.net/index.html</span></div>
+    <div class="field sunken"><img src="img/icon.png" alt=""><span id="url">https://acab-site.allcocktailsarebeautiful.workers.dev/index.html</span></div>
     <button class="btn" data-go="ch3">➜ Go</button>
   </div>
   <div class="links-bar">
@@ -378,7 +378,7 @@ main section.show{animation:pop .25s ease-out}
 
   <div class="viewport">
     <div id="loader">
-      <div>Opening page <b>http://www.allcocktailsarebeautiful.net/</b>…</div>
+      <div>Opening page <b>https://acab-site.allcocktailsarebeautiful.workers.dev/</b>…</div>
       <div class="lbar sunken" id="lbar"></div>
       <div style="font-size:12px;color:#555">shaking · straining · garnishing</div>
     </div>
@@ -691,7 +691,7 @@ document.querySelector('.poster').onclick=()=>openV('ch3',0);
 // navigation + fake address bar
 const PAGES={home:'index.html',story:'our_story.txt',ch1:'chapter01/',ch2:'chapter02/underwater/',ch3:'chapter03/invitation_vol3.html',guestbook:'guestbook.html'};
 const hist=['home'];let hpos=0,navLock=false;
-function setURL(id){url.textContent='http://www.allcocktailsarebeautiful.net/'+PAGES[id];
+function setURL(id){url.textContent='https://acab-site.allcocktailsarebeautiful.workers.dev/'+PAGES[id];
   document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('active',a.dataset.go===id));}
 function go(id,push=true){if(!PAGES[id])id='home';
   document.body.dataset.view=id;
