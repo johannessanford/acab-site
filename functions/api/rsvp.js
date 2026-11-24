@@ -16,13 +16,14 @@ export async function onRequestPost({ request, env }) {
 export async function onRequestGet({ request, env }) {
   const key = new URL(request.url).searchParams.get("key");
   if (!env.RSVP_KEY || key !== env.RSVP_KEY) return new Response("Not found", { status: 404 });
-  const rows = [["name", "confirmed_at_utc"]];
+  const rows = [["name", "confirmed_at_jakarta"]];
+  const wib = iso => new Date(iso).toLocaleString("en-GB", { timeZone: "Asia/Jakarta", day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
   let cursor;
   do {
     const page = await env.ACAB.list({ prefix: "rsvp:vol3:", cursor });
     for (const k of page.keys) {
       const v = await env.ACAB.get(k.name, "json");
-      if (v) rows.push([v.name, v.at]);
+      if (v) rows.push([v.name, wib(v.at)]);
     }
     cursor = page.list_complete ? null : page.cursor;
   } while (cursor);
