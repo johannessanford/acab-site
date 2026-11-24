@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A.C.A.B — All Cocktails Are Beautiful</title>
+<link rel="icon" href="img/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Monoton&family=Abril+Fatface&family=Pixelify+Sans:wght@400;600&family=Silkscreen:wght@400;700&family=Gloock&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{
+  --peri:#6b7fe0; --peri-d:#3f55c9; --pol:#2347b8; --navy:#0b1240;
+  --silver:#dcdff5; --silver-d:#9aa1c9; --ink:#14183a;
+  --red:#ec3a52; --green:#17b33c; --yellow:#f3ec34;
+  --bev: #fff #5a608f #5a608f #fff;
+  --bev-in: #5a608f #fff #fff #5a608f;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  font-family:Tahoma,Verdana,"Segoe UI",sans-serif;font-size:13px;color:var(--ink);
+  background:
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,.18) 0 1px, transparent 2px) 0 0/38px 38px,
+    radial-gradient(circle at 70% 80%, rgba(255,255,255,.12) 0 1px, transparent 2px) 0 0/53px 53px,
+    linear-gradient(160deg,#7d8ff0 0%,#5b6fdc 45%,#3448b8 100%) fixed;
+  min-height:100vh;padding:28px 18px 70px;
+}
+a{color:#1a2fd0}
+img{display:block;max-width:100%}
+.pix{font-family:"Silkscreen",monospace;letter-spacing:.02em}
+.vt{font-family:"VT323",monospace}
+
+/* ---------- window chrome ---------- */
+.win{background:var(--silver);border:2px solid;border-color:var(--bev);box-shadow:0 0 0 1px #20264f,8px 10px 0 rgba(10,14,60,.35)}
+.titlebar{display:flex;align-items:center;gap:8px;padding:5px 6px 5px 8px;color:#fff;font-weight:bold;
+  background:linear-gradient(180deg,#8fa0ff 0%,#4a63e0 18%,#2f47c4 60%,#2338a8 100%);
+  text-shadow:1px 1px 0 #0c1660;user-select:none}
+.titlebar img{width:18px;height:18px;border-radius:50%;border:1px solid #fff}
+.titlebar .t{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tb-btns{display:flex;gap:3px}
+.tb-btns span{width:22px;height:20px;display:grid;place-items:center;border-radius:3px;font:bold 12px/1 Tahoma;
+  background:linear-gradient(#7d92ff,#3c55d6);border:1px solid #fff;box-shadow:inset 0 0 0 1px #2238a8;cursor:default}
+.tb-btns span.x{background:linear-gradient(#ff8a6a,#d9402a)}
+.btn{font:12px Tahoma,sans-serif;background:var(--silver);border:2px solid;border-color:var(--bev);padding:4px 10px;cursor:pointer;color:var(--ink);display:inline-flex;align-items:center;gap:6px;text-decoration:none}
+.btn:active,.btn.on{border-color:var(--bev-in)}
+.btn:focus-visible{outline:1px dotted #000;outline-offset:-5px}
+.sunken{border:2px solid;border-color:var(--bev-in);background:#fff}
+
+/* ---------- browser ---------- */
+.browser{max-width:1180px;margin:0 auto}
+.menubar{display:flex;gap:2px;padding:3px 4px;border-bottom:1px solid var(--silver-d)}
+.menubar span{padding:2px 8px;cursor:default}
+.menubar span:hover{background:var(--pol);color:#fff}
+.menubar span u{text-decoration:underline}
+.toolbar{display:flex;flex-wrap:wrap;gap:4px;padding:5px 6px;border-bottom:1px solid var(--silver-d);align-items:center}
+.toolbar .btn{flex-direction:column;gap:2px;padding:3px 8px;min-width:58px;border-color:transparent;background:none}
+.toolbar .btn:hover{border-color:var(--bev)}
+.toolbar .btn:active{border-color:var(--bev-in)}
+.toolbar .ico{font-size:20px;line-height:1;filter:drop-shadow(1px 1px 0 rgba(0,0,0,.25))}
+.sep{width:2px;align-self:stretch;border-left:1px solid var(--silver-d);border-right:1px solid #fff;margin:0 4px}
+.throbber{margin-left:auto;width:46px;height:46px;border:2px solid;border-color:var(--bev-in);background:#0b1240;display:grid;place-items:center;overflow:hidden}
+.throbber .ball{width:30px;height:30px;border-radius:50%;
+  background:
+    repeating-linear-gradient(90deg,rgba(0,0,0,.35) 0 1px,transparent 1px 5px),
+    repeating-linear-gradient(0deg,rgba(0,0,0,.35) 0 1px,transparent 1px 5px),
+    radial-gradient(circle at 35% 30%,#fff,#b9c2ff 40%,#4a58a8 80%);
+  animation:spin 2.4s linear infinite}
+@keyframes spin{to{background-position:30px 0,0 0,0 0}}
+.address{display:flex;align-items:center;gap:6px;padding:4px 6px;border-bottom:1px solid var(--silver-d)}
+.address label{color:#555}
+.address .field{flex:1;display:flex;align-items:center;gap:6px;padding:3px 6px;font-family:Tahoma;min-width:0}
+.address .field img{width:16px;height:16px;border-radius:50%}
+.address .field span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.links-bar{display:flex;gap:4px;padding:3px 6px;border-bottom:1px solid var(--silver-d);flex-wrap:wrap;align-items:center}
+.links-bar b{color:#555;font-weight:normal;margin-right:4px}
+.links-bar a{color:var(--ink);text-decoration:none;padding:2px 6px;border:1px solid transparent}
+.links-bar a:hover{border-color:var(--silver-d);background:#fff}
+
+.viewport{border:2px solid;border-color:var(--bev-in);margin:0 4px;background:#0b1240;position:relative;overflow:hidden}
+.statusbar{display:flex;gap:4px;padding:3px 4px}
+.statusbar > div{border:1px solid;border-color:var(--bev-in);padding:2px 8px;white-space:nowrap}
+.statusbar .grow{flex:1;overflow:hidden;text-overflow:ellipsis}
+.prog{width:140px;padding:2px!important;display:flex;gap:2px}
+.prog i{flex:1;height:10px;background:var(--pol);opacity:0;transition:opacity .1s}
+.prog i.on{opacity:1}
+
+/* ---------- loader ---------- */
+#loader{position:absolute;inset:0;z-index:20;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;font-family:"Times New Roman",serif;color:#000;transition:opacity .35s}
+#loader.done{opacity:0;pointer-events:none}
+#loader .lbar{width:260px;height:16px;padding:2px;display:flex;gap:2px}
+#loader .lbar i{width:10px;background:var(--pol)}
+
+/* ---------- page inside ---------- */
+.marquee{background:#000;color:var(--yellow);border-bottom:2px ridge #8891d8;overflow:hidden;white-space:nowrap;font-family:"VT323";font-size:22px;padding:2px 0}
+.marquee div{display:inline-block;padding-left:100%;animation:mq 26s linear infinite}
+@keyframes mq{to{transform:translateX(-100%)}}
+.page{display:grid;grid-template-columns:200px minmax(0,1fr);min-height:600px;
+  background:
+   radial-gradient(circle,#ffffff22 1px,transparent 1.5px) 0 0/22px 22px,
+   radial-gradient(circle,#9fb0ff33 1px,transparent 1.5px) 11px 11px/22px 22px,
+   #0b1240}
+aside.frame{background:linear-gradient(#18216a,#0d1450);border-right:3px ridge #7f8be0;padding:14px 10px;color:#cfd6ff}
+aside .side-sticky{position:sticky;top:10px}
+aside h4{font-family:"Silkscreen";font-weight:400;font-size:11px;margin:16px 0 6px;color:var(--yellow)}
+aside nav a{display:flex;align-items:center;gap:6px;color:#fff;text-decoration:none;font-family:"VT323";font-size:21px;padding:3px 6px;border:1px dashed transparent}
+aside nav a:hover,aside nav a.active{border-color:#9fb0ff;background:#2a3aa8}
+aside nav a .new{font-family:"Silkscreen";font-size:9px;background:var(--red);color:#fff;padding:1px 3px;animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{visibility:hidden}}
+.avatar{width:120px;height:120px;border-radius:50%;margin:0 auto;border:3px solid #c9d0ff;box-shadow:0 0 0 3px #2a3aa8,0 0 18px #9fb0ff}
+.counter{display:flex;justify-content:center;gap:2px;margin-top:6px}
+.counter span{background:#000;color:#4dff7a;font-family:"VT323";font-size:22px;width:18px;text-align:center;border:1px solid #555}
+.badge88{width:88px;height:31px;display:inline-grid;place-items:center;font-family:"Silkscreen";font-size:8px;line-height:1.05;text-align:center;border:1px solid #000;color:#fff;margin:2px;text-decoration:none;overflow:hidden}
+main{padding:22px 26px 40px;color:#e9ecff;min-width:0}
+section{margin-bottom:46px;scroll-margin-top:12px}
+
+/* hero */
+/* hero — edition theme: swap these vars for each new chapter's art direction */
+.hero{--acr-fill:var(--green);--acr-dot:var(--red);--acr-shadow:#000;--acr-font:"Gloock",serif;
+  text-align:center;padding:18px 0 4px;display:flex;flex-direction:column;align-items:center;gap:14px}
+.hero .est{font-family:"Silkscreen";font-size:12px;letter-spacing:.2em;color:var(--yellow)}
+.wordart{font-family:"Monoton",cursive;font-weight:400;font-size:clamp(34px,6.2vw,78px);line-height:1.08;margin:0;color:#fff;text-shadow:3px 3px 0 #2338a8,5px 5px 0 #000}
+.hero .acr{font-family:var(--acr-font);font-size:clamp(34px,5vw,54px);line-height:1;display:flex;align-items:baseline;gap:.06em;margin-top:-2px}
+.hero .acr span{color:var(--acr-fill);text-shadow:3px 3px 0 var(--acr-shadow)}
+.hero .acr i{font-style:normal;color:var(--acr-dot);text-shadow:2px 2px 0 var(--acr-shadow);margin:0 .08em}
+.uc{display:inline-flex;align-items:center;margin-top:6px;padding:6px 12px;background:repeating-linear-gradient(45deg,#f3ec34 0 12px,#111 12px 24px);text-decoration:none}
+.uc span{background:#000;color:var(--yellow);font-family:"Silkscreen";font-size:11px;padding:4px 8px}
+.rainbow-hr{height:6px;border:0;margin:22px 0;background:repeating-linear-gradient(90deg,#9fb0ff 0 12px,#fff 12px 18px,var(--peri) 18px 30px,#0b1240 30px 34px)}
+
+/* inner windows */
+.iwin{color:var(--ink);margin:0 auto}
+.iwin .body{padding:14px}
+.notepad .body{font-family:"Courier New",monospace;font-size:14px;line-height:1.6;background:#fff;border:2px solid;border-color:var(--bev-in);margin:4px;max-height:none}
+.notepad .menubar{border:0}
+.notepad p{margin:0 0 12px}
+.swap{display:grid;grid-template-columns:repeat(4,auto);justify-content:center;gap:4px clamp(10px,3vw,28px);margin:16px 0 8px;text-align:center}
+.swap .L{font-family:"Gloock";font-size:44px;color:var(--pol);line-height:1}
+.swap .w{font-family:"VT323";font-size:22px;display:grid;justify-items:center}
+.swap .w s{color:#888}
+.swap .w .old,.swap .w .nw{grid-area:1/1;transition:opacity .6s,transform .6s}
+.swap.flip .old{opacity:0;transform:translateY(-10px)}
+.swap .nw{opacity:0;transform:translateY(10px);color:#c0156b}
+.swap.flip .nw{opacity:1;transform:none}
+.swap-cap{text-align:center;font-family:"Silkscreen";font-size:10px;color:#666}
+
+.chapter-head{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.chapter-head h2{font-family:"Monoton",cursive;font-weight:400;font-size:clamp(28px,4.2vw,48px);margin:0;line-height:1.1;color:#fff;text-shadow:3px 3px 0 var(--pol)}
+.chapter-head .tag{font-family:"VT323";font-size:22px;color:#9fb0ff}
+.explorer .body{display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:0;padding:0}
+.explorer .files{background:#fff;border:2px solid;border-color:var(--bev-in);margin:4px;padding:14px;display:grid;grid-template-columns:repeat(auto-fill,minmax(122px,1fr));gap:14px 12px;align-content:start}
+.thumb{background:none;border:0;padding:0;cursor:pointer;text-align:center;font:11px Tahoma;color:var(--ink)}
+.thumb .pol{background:#fbfbf7;padding:6px 6px 18px;box-shadow:1px 2px 0 #b9bcd6,0 0 0 1px #d6d8ea;transition:transform .15s}
+.thumb.blue .pol{background:#2c56c8}
+.thumb img{width:100%;aspect-ratio:1/1;object-fit:cover}
+.thumb:nth-child(3n) .pol{transform:rotate(-2deg)}
+.thumb:nth-child(4n+1) .pol{transform:rotate(1.6deg)}
+.thumb:hover .pol,.thumb:focus-visible .pol{transform:rotate(0) scale(1.05)}
+.thumb .fn{display:inline-block;margin-top:6px;padding:0 3px}
+.thumb:focus{outline:none}
+.thumb:focus-visible .fn{background:var(--pol);color:#fff}
+.details{padding:10px 12px;font-size:12px;background:linear-gradient(#e6e9ff,#c9cff5);margin:4px 4px 4px 0;border:1px solid #fff}
+.details h5{margin:0 0 6px;font-size:12px;color:var(--pol)}
+.details dl{margin:0 0 12px;display:grid;grid-template-columns:auto 1fr;gap:3px 8px}
+.details dt{color:#555}
+.details dd{margin:0;font-weight:bold}
+.details .q{font-family:"Instrument Serif";font-style:italic;font-size:15.3px;line-height:1.2;color:#1c2a8a;border-left:3px solid var(--peri);padding-left:8px;margin:0}
+
+/* chapter 02 aquarium */
+#ch2{position:relative}
+.school{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.school i{position:absolute;font-style:normal;font-size:22px;opacity:.4;animation:swim linear infinite}
+@keyframes swim{from{transform:translateX(-80px)}to{transform:translateX(1100px)}}
+#ch2 > *:not(.school){position:relative;z-index:1}
+
+/* chapter 03 */
+#ch3 .shell{background:var(--red);color:#111;padding:0;border:3px solid var(--yellow);box-shadow:0 0 0 3px #000,0 0 40px rgba(236,58,82,.6)}
+#ch3 .ribbon{background:#000;color:var(--yellow);font-family:"Silkscreen";font-size:12px;display:flex;justify-content:space-between;padding:6px 10px;gap:10px}
+#ch3 .ribbon b{color:var(--green);animation:blink 1s steps(2) infinite}
+.ch3grid{display:grid;grid-template-columns:minmax(220px,340px) minmax(0,1fr);gap:22px;padding:22px}
+.ch3grid .poster{width:100%;cursor:zoom-in;border:3px solid #000;box-shadow:6px 6px 0 #000;transform:rotate(-1.5deg);transition:transform .2s}
+.ch3grid .poster:hover{transform:rotate(0)}
+.inv small{font-family:"Silkscreen";font-size:11px;letter-spacing:.35em;color:var(--yellow);text-shadow:1px 1px 0 #000}
+.inv h3{font-family:"Monoton",cursive;font-weight:400;font-size:clamp(56px,8.5vw,104px);line-height:1;margin:6px 0 2px;color:var(--yellow);text-shadow:4px 4px 0 #000}
+.inv .vol{font-family:"Monoton",cursive;font-size:30px;color:var(--green);text-shadow:2px 2px 0 #000;letter-spacing:.08em}
+.countdown{display:flex;gap:8px;margin:16px 0;flex-wrap:wrap}
+.countdown div{background:#000;color:var(--green);text-align:center;padding:6px 10px;min-width:70px;border:2px solid var(--yellow)}
+.countdown b{display:block;font-family:"VT323";font-size:40px;font-weight:400;line-height:1}
+.countdown span{font-family:"Silkscreen";font-size:9px;color:var(--yellow)}
+.lineup{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;background:#000;border:3px solid #000;padding:12px 14px;margin-bottom:16px;font-size:16px}
+.lineup dt{font-family:"Silkscreen";font-size:11px;color:var(--red);padding-top:2px}
+.lineup dd{margin:0;font-family:"Pixelify Sans",monospace;font-weight:400;color:var(--yellow)}
+.cta{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.cta .big{background:var(--green);color:#000;font-family:"Silkscreen";font-size:14px;padding:12px 18px;border:3px solid;border-color:#9dffb2 #04541a #04541a #9dffb2;text-decoration:none}
+.cta .big:hover{background:#25d24e}
+.cta small{color:#000;font-size:12px}
+
+/* guestbook */
+.gb .entry{background:#fff;border:1px solid var(--silver-d);margin-bottom:10px;display:grid;grid-template-columns:120px 1fr}
+.gb .who{background:#e6e9ff;padding:8px;font-size:11px;border-right:1px solid var(--silver-d)}
+.gb .who b{display:block;color:var(--pol);font-size:12px}
+.gb .msg{padding:10px;font-size:14px}
+footer{text-align:center;color:#b8c0ff;font-size:11px;padding:20px 10px 4px}
+footer .bv{font-family:"Silkscreen";font-size:9px;margin-top:10px;opacity:.8}
+
+/* lightbox */
+#viewer{position:fixed;inset:0;background:rgba(5,8,40,.6);display:none;align-items:center;justify-content:center;z-index:100;padding:16px}
+#viewer.open{display:flex}
+#viewer .win{max-width:min(900px,96vw);width:auto}
+#viewer .stage{background:#1b1f3b;padding:10px;display:grid;place-items:center;margin:4px;border:2px solid;border-color:var(--bev-in)}
+#viewer .stage img{max-height:70vh;width:auto}
+#viewer .vbar{display:flex;gap:6px;justify-content:center;align-items:center;padding:6px}
+#viewer .vbar span{flex:1;font-size:12px;color:#333;padding:0 8px}
+
+/* taskbar */
+.taskbar{position:fixed;left:0;right:0;bottom:0;height:38px;display:flex;align-items:center;gap:6px;padding:3px 6px;z-index:50;
+  background:linear-gradient(#5c72e6,#2f45c2 40%,#2a3eb4);border-top:2px solid #9aa8ff}
+.start{font-family:"Silkscreen";font-size:13px;color:#fff;background:linear-gradient(#3bd862,#139a35);border:0;border-radius:0 12px 12px 0;padding:6px 18px 6px 12px;height:100%;display:flex;align-items:center;gap:6px;text-shadow:1px 1px 0 #064f19;box-shadow:inset 0 0 0 1px #8dffab;cursor:pointer;text-decoration:none}
+.task{color:#fff;background:#3f56d6;border:1px solid #8a99ff;border-radius:3px;padding:4px 10px;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px}
+.tray{margin-left:auto;color:#fff;font-size:12px;background:#2034a6;border-left:1px solid #6a7ce8;height:100%;display:flex;align-items:center;gap:8px;padding:0 10px}
+
+.spark{position:fixed;pointer-events:none;z-index:200;font-size:12px;color:#fff;text-shadow:0 0 6px #9fb0ff;animation:fall .9s ease-out forwards}
+@keyframes fall{to{transform:translateY(26px) scale(.3);opacity:0}}
+
+@media (max-width:860px){
+  body{padding:10px 6px 60px}
+  .page{grid-template-columns:minmax(0,1fr)}
+  aside.frame{border-right:0;border-bottom:3px ridge #7f8be0}
+  aside .side-sticky{position:static}
+  aside nav{display:flex;flex-wrap:wrap;gap:2px}
+  aside .avatar,aside .sidebits{display:none}
+  .explorer .body{grid-template-columns:minmax(0,1fr)}
+  .details{margin:0 4px 4px}
+  .ch3grid{grid-template-columns:minmax(0,1fr);padding:18px 14px;gap:18px}
+  .ch3grid .poster{width:100%;max-width:300px;margin:0 auto;transform:none}
+  #ch3 .ribbon{font-size:10px}
+  .countdown div{min-width:0;flex:1}
+  .lineup{grid-template-columns:minmax(0,auto) minmax(0,1fr)}
+  .menubar,.links-bar,.toolbar .lbl{display:none}
+  .toolbar .btn{min-width:40px}
+  main{padding:18px 12px}
+  .swap .L{font-size:34px}.swap .w{font-size:18px}
+  .task{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+}
+
+/* views: home shows banner + chapter 03; other sections open from the navigation */
+main section,main .rainbow-hr{display:none}
+body[data-view="home"] #home,body[data-view="home"] #ch3,body[data-view="home"] main .rainbow-hr{display:block}
+body[data-view="story"] #story,body[data-view="ch1"] #ch1,body[data-view="ch2"] #ch2,body[data-view="ch3"] #ch3,body[data-view="guestbook"] #guestbook{display:block}
+body[data-view="home"] #home{display:flex}
+body:not([data-view="home"]) #home{display:none}
+main section.show{animation:pop .25s ease-out}
+@keyframes pop{from{opacity:0;transform:translateY(8px)}}
+
+
+
+/* retro 468x60-style banner ads */
+.ads{width:100%;max-width:900px;display:flex;flex-direction:column;gap:14px;margin-top:22px}
+.bn{all:unset;box-sizing:border-box;cursor:pointer;display:grid;text-align:left;border:3px solid #fff;box-shadow:0 0 0 2px #000,5px 5px 0 2px #000;overflow:hidden;font-family:Arial,Helvetica,sans-serif;position:relative}
+.bn:hover{filter:brightness(1.06)} .bn:focus-visible{outline:3px dashed var(--yellow);outline-offset:4px}
+.bn.voted::after{content:"✓ YOU'RE IN";position:absolute;top:4px;left:50%;transform:translateX(-50%);font-family:"Silkscreen";font-size:10px;background:#000;color:var(--yellow);padding:2px 6px}
+/* top: PowerBooks layout — white copy | photo | grey form */
+.bn1{background:#fff;color:#111;grid-template-columns:minmax(0,1fr) auto;min-height:170px}
+.bn1{aspect-ratio:3.2/1}
+.bn1 .b1-white{background:#fff url(img/ad_rich_wide.jpg) right center/cover no-repeat;align-self:stretch;padding:14px 44% 14px 20px;gap:12px;container-type:inline-size}
+.bn1 .b1-logo{font-size:clamp(28px,4.4vw,44px)}.bn1 .b1-logo span{font-size:1.12em}
+.bn1 .b1-h{white-space:nowrap;font-size:clamp(14px,2vw,21px);text-shadow:0 0 4px #fff,0 0 4px #fff}
+.bn1 .b1-pill{padding:6px 22px}.bn1 .b1-pill span{font-size:clamp(11px,1.3vw,14px)}.bn1 .b1-pill b{font-size:clamp(20px,3vw,32px)}
+.b1-white{display:flex;flex-direction:column;justify-content:center;gap:8px;padding:12px 16px}
+.b1-logo{font-family:"Arial Black",Arial,sans-serif;font-weight:900;font-size:28px;letter-spacing:-1px;font-style:italic;line-height:1}
+.b1-logo span{color:var(--red);font-family:Georgia,serif;font-size:32px;margin:0 1px}
+.b1-h{font-size:clamp(14px,1.8vw,20px);line-height:1.1}
+.b1-pill{display:flex;align-items:center;gap:8px;background:var(--red);border-radius:40px;padding:4px 16px;color:#fff;width:max-content}
+.b1-pill span{font-size:11px;font-weight:bold}
+.b1-pill b{font-size:clamp(17px,2.2vw,24px);letter-spacing:-.5px}
+.b1-img{width:170px;height:100%;object-fit:cover;border-left:2px solid #ddd;border-right:2px solid #999}
+.b1-form{background:#c4c4c4;padding:10px 12px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:12px;font-size:16px;text-align:left;padding:14px 18px}
+.b1-form > *{align-self:stretch}.b1-form .b1-go{align-self:flex-start}
+.b1-phone{background:#e4e4e4;border:2px inset #aaa;font-size:21px;padding:3px 8px;text-align:left}
+.b1-sel{display:flex;align-items:center;gap:4px;background:#fff;border:2px inset #999;padding:3px 6px;font-size:15px;white-space:nowrap}
+.b1-sel em{color:#d00;font-style:normal;font-weight:bold}
+.b1-sel i{font-style:normal;border:1px outset #aaa;background:#ddd;padding:0 3px;margin-left:auto}
+.b1-go{align-self:flex-start;background:var(--red);color:#fff;font-family:"Pixelify Sans",monospace;font-weight:600;font-size:18px;padding:6px 14px;border:2px outset #ff8c9a;animation:nudge 1.6s ease-in-out infinite}
+/* bottom: LOVE TOP SECRET layout */
+.bn2{aspect-ratio:3/1;background:#120404 url(img/ad_love.jpg) left center/cover no-repeat;grid-template-columns:1fr;container-type:inline-size}
+.b2-r{justify-self:end;display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:2.2cqw;padding:2cqw 3cqw;width:58%}
+.b2-h{font-family:"Abril Fatface",Georgia,serif;font-size:5.4cqw;white-space:nowrap;line-height:1;color:#ff2b33;letter-spacing:.04em;text-align:right;border-top:2px solid #ff2b33;border-bottom:2px solid #ff2b33;padding:4px 2px;text-shadow:2px 2px 0 #000}
+.b2-row{display:flex;align-items:center;gap:2.4cqw}
+.b2-stamp{font-family:"Abril Fatface",Georgia,serif;font-size:2.8cqw;color:#ff2b33;border:3px double #ff2b33;padding:3px 10px;transform:rotate(-10deg);opacity:.9;letter-spacing:.08em;
+  -webkit-mask:repeating-linear-gradient(35deg,#000 0 3px,rgba(0,0,0,.7) 3px 5px);mask:repeating-linear-gradient(35deg,#000 0 3px,rgba(0,0,0,.7) 3px 5px)}
+.b2-cta{font-family:Georgia,serif;font-weight:bold;font-size:2.6cqw;color:#062e10;background:linear-gradient(#8dffa6,#17b33c 55%,#0b6e22);border:2px solid #c9ffd5;border-radius:30px;padding:.4em 1.4em;box-shadow:0 0 0 2px #062e10;white-space:nowrap;animation:nudge 1.6s ease-in-out infinite}
+.bn-size{align-self:flex-end;font-family:"Arial Black",Arial,sans-serif;font-size:11px;color:#9fb0ff;opacity:.7;margin-top:-6px}
+@keyframes nudge{50%{transform:scale(1.05)}}
+/* tally */
+.tally{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.t-box{border:3px solid #000;box-shadow:4px 4px 0 #000;padding:10px 12px;text-align:center;transition:transform .2s}
+.t-red{background:#ff5a6e;color:#000}.t-green{background:var(--green);color:#000}
+.t-box.mine{outline:3px dashed var(--yellow);outline-offset:3px}
+.t-box.bump{transform:scale(1.06)}
+.t-name{font-family:"Pixelify Sans",monospace;font-weight:600;font-size:18px}
+.t-num{font-family:"VT323",monospace;font-size:52px;line-height:1;margin:4px auto 0;background:#000;color:var(--yellow);border:2px inset #444;width:max-content;min-width:96px;padding:2px 10px;letter-spacing:.08em}
+.t-green .t-num{color:#7dff9a}
+.t-sub{font-family:"Silkscreen";font-size:10px;margin-top:4px}
+.t-hint{font-family:"Pixelify Sans",monospace;font-size:13px;color:#000;margin-top:10px}
+@media (max-width:860px){
+  .bn1{grid-template-columns:minmax(0,1fr) 104px;min-height:96px;aspect-ratio:auto}
+  .bn1 .b1-white{padding:6px 50% 6px 6px;justify-content:center;gap:4px;background-size:auto 100%}
+  .bn1 .b1-logo{font-size:12px}
+  .bn1 .b1-pill{padding:2px 6px}.bn1 .b1-pill span{font-size:6px}.bn1 .b1-pill b{font-size:10px}
+  .bn1 .b1-h{font-size:min(8px,2.1vw);line-height:1.15;white-space:nowrap;text-shadow:0 0 3px #fff,0 0 3px #fff}
+  .b1-sel .lg{display:none}
+  .b1-sel{white-space:normal}
+  .b1-go{white-space:normal;line-height:1.1}
+  .b1-white{padding:6px;gap:4px}.b1-logo{font-size:12px;letter-spacing:-.5px}.b1-logo span{font-size:13px}.b1-h{font-size:8.5px}
+  .b1-pill{padding:2px 6px;gap:3px}.b1-pill span{font-size:6px}.b1-pill b{font-size:10px}
+  .b1-form{padding:5px;gap:3px;font-size:7px}
+  .b1-phone{font-size:8px;padding:1px 3px}
+  .b1-sel{font-size:6.5px;padding:1px 2px}.b1-sel i{display:none}
+  .b1-go{font-size:7px;padding:2px 4px}
+
+  .tally{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body data-view="home">
+
+<div class="browser win" id="browser">
+  <div class="titlebar">
+    <img src="img/icon.png" alt="">
+    <span class="t">A.C.A.B — All Cocktails Are Beautiful — Cocktail Navigator 2.0</span>
+    <div class="tb-btns" aria-hidden="true"><span>_</span><span>□</span><span class="x">✕</span></div>
+  </div>
+  <div class="menubar" aria-hidden="true">
+    <span><u>F</u>ile</span><span><u>E</u>dit</span><span><u>V</u>iew</span><span>F<u>a</u>vorites</span><span><u>T</u>ools</span><span><u>H</u>elp</span>
+  </div>
+  <div class="address">
+    <label>Address</label>
+    <div class="field sunken"><img src="img/icon.png" alt=""><span id="url">http://www.allcocktailsarebeautiful.net/index.html</span></div>
+    <button class="btn" data-go="ch3">➜ Go</button>
+  </div>
+  <div class="links-bar">
+    <b>Links</b>
+    <a href="#story" data-go="story">📄 Our Story</a>
+    <a href="#ch1" data-go="ch1">📁 Volume 01</a>
+    <a href="#ch2" data-go="ch2">📁 Volume 02</a>
+    <a href="#ch3" data-go="ch3">✉️ You're Invited</a>
+    <a href="https://www.instagram.com/allcocktailsarebeautiful__/" target="_blank" rel="noopener">🌐 Instagram</a>
+  </div>
+
+  <div class="viewport">
+    <div id="loader">
+      <div>Opening page <b>http://www.allcocktailsarebeautiful.net/</b>…</div>
+      <div class="lbar sunken" id="lbar"></div>
+      <div style="font-size:12px;color:#555">shaking · straining · garnishing</div>
+    </div>
+
+    <div class="marquee"><div>★ A.C.A.B VOLUME 3 ★ 12.12 ★ MUSIC STARTS 20.00 ★ TUNES BY LASZLOW · AKSILAGAA · SHIROSABRE ★ IDR 200K · FREE FLOW COCKTAILS ★ YOU ARE INVITED ★ ALL COCKTAILS ARE BEAUTIFUL ★</div></div>
+
+    <div class="page">
+      <aside class="frame">
+        <div class="side-sticky">
+          <img class="avatar" src="img/logo.jpg" alt="A.C.A.B logo: a hand holding a cocktail with an orange wheel">
+          <h4>~ navigate ~</h4>
+          <nav id="nav">
+            <a href="#home" data-go="home">🏠 home</a>
+            <a href="#story" data-go="story">📄 our_story.txt</a>
+            <a href="#ch1" data-go="ch1">🪩 volume 01</a>
+            <a href="#ch2" data-go="ch2">🐟 volume 02</a>
+            <a href="#ch3" data-go="ch3">🍸 volume 03 <span class="new">NEW!</span></a>
+            <a href="#guestbook" data-go="guestbook">📖 guestbook</a>
+          </nav>
+          <div class="sidebits">
+            <h4>~ you are visitor no. ~</h4>
+            <div class="counter"><span>0</span><span>0</span><span>0</span><span>0</span><span>∞</span></div>
+            <h4>~ now spinning ~</h4>
+            <div class="sunken" style="background:#000;color:#4dff7a;font-family:VT323;font-size:17px;padding:6px 8px;line-height:1.15">
+              <div id="np">▶ Laszlow</div>
+              <div style="color:#6c7bd6">01 Laszlow<br>02 Aksilagaa<br>03 Shirosabre</div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <main>
+        <!-- HOME -->
+        <section id="home" class="hero">
+          <div class="est">✦ EST. 2026 ✦</div>
+          <h1 class="wordart">ALL COCKTAILS<br>ARE BEAUTIFUL</h1>
+          <div class="acr" aria-label="a.C.A.b"><span>a</span><i>.</i><span>C</span><i>.</i><span>A</span><i>.</i><span>b</span></div>
+          <a class="uc" href="#ch3" data-go="ch3"><span>🚧 CHAPTER 03 LOADING · 12.12 🚧</span></a>
+          <div class="ads">
+            <button class="bn bn1" data-vote="friends" aria-label="Advertisement: The poor chase dates, rich finds networks. I am here to network — join Let's be Friends">
+              <div class="b1-white">
+                <div class="b1-logo">RICH<span>&amp;</span>RICHER</div>
+                <div class="b1-h">THE POOR CHASE DATES<br>RICH FINDS NETWORKS</div>
+                <div class="b1-pill"><span>with my</span><b>5-step plan</b></div>
+              </div>
+              <div class="b1-form">
+                <div class="b1-phone">0800-FREE-FLOW</div>
+                <div>◯ Yes, I'll take my</div>
+                <span class="b1-sel"><em>FREE</em> <span class="lg">Cocktail </span>Wealth Mindset™ <i>▾</i></span>
+                <span class="b1-go">I AM HERE TO NETWORK!</span>
+              </div>
+            </button>
+            <button class="bn bn2" data-vote="maybe" aria-label="Advertisement: Problem in bed? Alone? I'm looking — join Can we? Maybe...">
+              <div class="b2-r">
+                <div class="b2-h">PROBLEM IN BED?</div>
+                <div class="b2-row"><span class="b2-stamp">ALONE?</span><span class="b2-cta">I'M LOOKING</span></div>
+              </div>
+            </button>
+            <div class="bn-size">468X60 · ADVERTISEMENT</div>
+          </div>
+        </section>
+
+        <hr class="rainbow-hr">
+
+        <!-- STORY -->
+        <section id="story">
+          <div class="iwin win notepad" style="max-width:760px">
+            <div class="titlebar"><span>📄</span><span class="t">our_story.txt — Notepad</span><div class="tb-btns" aria-hidden="true"><span>_</span><span>□</span><span class="x">✕</span></div></div>
+            <div class="menubar" aria-hidden="true"><span><u>F</u>ile</span><span><u>E</u>dit</span><span>F<u>o</u>rmat</span><span><u>H</u>elp</span></div>
+            <div class="body">
+              <p>It was never supposed to be a series.</p>
+              <p>A friend of ours beat cancer. So we did the only reasonable thing: we filled a living room with disco balls and blue star balloons, put two DJs in the corner, poured something cold, and stayed up way too late.</p>
+              <p>We called it <b>A.C.A.B: All Cancers Are Buajingan</b>. Some things deserve a proper swear word.</p>
+              <p>The next morning people were already asking when the next one was. So the letters stayed and the meaning grew up:</p>
+
+              <div class="swap" id="swap" aria-live="polite">
+                <div class="L">A</div><div class="L">C</div><div class="L">A</div><div class="L">B</div>
+                <div class="w">All</div>
+                <div class="w"><span class="old"><s>Cancers</s></span><span class="nw">Cocktails</span></div>
+                <div class="w">are</div>
+                <div class="w"><span class="old"><s>Buajingan</s></span><span class="nw">Beautiful</span></div>
+              </div>
+              <div class="swap-cap">[ click the letters to switch back to where it started ]</div>
+              <p style="margin-top:14px">It's still a celebration of being here, just with more people, more cocktails, and for some reason, fish.</p>
+              <p style="margin:0">— the a.c.a.b crew_<span style="animation:blink 1s steps(2) infinite">▌</span></p>
+            </div>
+          </div>
+        </section>
+
+        <!-- CH1 -->
+        <section id="ch1">
+          <div class="chapter-head"><h2>Volume 01</h2></div>
+          <div class="iwin win explorer">
+            <div class="titlebar"><span>📁</span><span class="t">C:\ACAB\chapter_01\</span><div class="tb-btns" aria-hidden="true"><span>_</span><span>□</span><span class="x">✕</span></div></div>
+            <div class="body">
+              <div class="files" data-set="ch1"></div>
+              <div class="details">
+                <h5>volume_01</h5>
+                <dl>
+                  <dt>Date</dt><dd>27 · 06 · 2026</dd>
+                  <dt>Music</dt><dd>Aksilaga &amp; Lasz Low</dd>
+                </dl>
+                <p class="q">“Thanks for making our first A.C.A.B party everything we hoped for.”</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- CH2 -->
+        <section id="ch2">
+          <div class="school" aria-hidden="true" id="school"></div>
+          <div class="chapter-head"><h2>Volume 02</h2></div>
+          <div class="iwin win explorer">
+            <div class="titlebar"><span>📁</span><span class="t">C:\ACAB\chapter_02\underwater\</span><div class="tb-btns" aria-hidden="true"><span>_</span><span>□</span><span class="x">✕</span></div></div>
+            <div class="body">
+              <div class="files" data-set="ch2"></div>
+              <div class="details">
+                <h5>volume_02</h5>
+                <dl>
+                  <dt>Date</dt><dd>05 · 09 · 2026</dd>
+                  <dt>Music</dt><dd>Laszlow · Aksilagaa · Ahoct</dd>
+                </dl>
+                <p class="q">“Somehow, we did it all over again.”</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- CH3 -->
+        <section id="ch3">
+          <div class="chapter-head"><h2>Volume 03</h2></div>
+          <div class="shell">
+            <div class="ribbon"><span>📨 NEW MESSAGE: invitation_vol3.eml</span><b>● UNREAD</b></div>
+            <div class="ch3grid">
+              <img class="poster" src="img/ch3_poster.jpg" alt="A.C.A.B volume 3 poster: 12.12, music starts 20.00" data-full="ch3">
+              <div class="inv">
+                <small>you are invited to</small>
+                <h3>12.12</h3>
+                <div class="vol">VOLUME 3</div>
+                <div class="countdown" id="cd" aria-label="Countdown to 12 December 2026, 20.00 WIB">
+                  <div><b id="cdD">--</b><span>days</span></div>
+                  <div><b id="cdH">--</b><span>hrs</span></div>
+                  <div><b id="cdM">--</b><span>min</span></div>
+                  <div><b id="cdS">--</b><span>sec</span></div>
+                </div>
+                <dl class="lineup">
+                  <dt>WHEN</dt><dd>Saturday 12 · 12 · 2026, music starts 20.00</dd>
+                  <dt>TUNES BY</dt><dd>Laszlow · Aksilagaa · Shirosabre</dd>
+                  <dt>ENTRY</dt><dd>IDR 200K, with free flow cocktails</dd>
+                  <dt>WHERE</dt><dd>DM us for the details</dd>
+                </dl>
+                <div class="cta">
+                  <a class="big" href="https://www.instagram.com/allcocktailsarebeautiful__/" target="_blank" rel="noopener">▶ RSVP ON INSTAGRAM</a>
+                </div>
+                <div class="tally" id="tally" aria-live="polite">
+                  <div class="t-box t-red" data-g="friends"><div class="t-name">Let's be Friends</div><div class="t-num" id="tFriends">--</div><div class="t-sub">coming</div></div>
+                  <div class="t-box t-green" data-g="maybe"><div class="t-name">Can we? Maybe...</div><div class="t-num" id="tMaybe">--</div><div class="t-sub">coming</div></div>
+                </div>
+                <div class="t-hint" id="tHint">Tap one of the ads up top to join a group ↑</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- GUESTBOOK -->
+        <section id="guestbook">
+          <div class="chapter-head"><h2 style="font-size:36px">Guestbook</h2></div>
+          <div class="iwin win gb">
+            <div class="titlebar"><span>📖</span><span class="t">guestbook.html</span><div class="tb-btns" aria-hidden="true"><span>_</span><span>□</span><span class="x">✕</span></div></div>
+            <div class="body">
+              <div class="entry"><div class="who"><b>aksilagaa</b>on chapter 01</div><div class="msg">#2 soon</div></div>
+              <div class="entry"><div class="who"><b>skrayurs</b>on chapter 02</div><div class="msg">🫶</div></div>
+              <div class="entry"><div class="who"><b>a.c.a.b</b>always</div><div class="msg">Until the next party 🍸</div></div>
+              <a class="btn" href="https://www.instagram.com/allcocktailsarebeautiful__/" target="_blank" rel="noopener">✍ Sign our guestbook (comment on Instagram)</a>
+            </div>
+          </div>
+        </section>
+
+        <footer>
+          <div>
+            <a class="badge88" href="#home" data-go="home" style="background:linear-gradient(#2338a8,#6b7fe0)">A.C.A.B<br>★ 2026 ★</a>
+            <span class="badge88" style="background:#000;color:#4dff7a">FREE FLOW<br>NOW!!</span>
+            <span class="badge88" style="background:linear-gradient(90deg,#ec3a52,#f3ec34);color:#000">EEPY WEEPY<br>APPROVED</span>
+            <span class="badge88" style="background:#17b33c;color:#000">◀ COCKTAIL<br>RING ▶</span>
+            <a class="badge88" href="https://www.instagram.com/allcocktailsarebeautiful__/" target="_blank" rel="noopener" style="background:#fff;color:#2338a8">FOLLOW US<br>@ACAB__</a>
+          </div>
+          <p>© 2026 A.C.A.B · All Cocktails Are Beautiful · Please drink responsibly &amp; get home safe.</p>
+          <div class="bv">best viewed at 1024×768 · with a drink in hand</div>
+        </footer>
+      </main>
+    </div>
+  </div>
+
+  <div class="statusbar">
+    <div class="grow" id="status">Done</div>
+    <div class="prog" id="prog"></div>
+    <div>🌐 Internet</div>
+  </div>
+</div>
+
+<!-- viewer -->
+<div id="viewer" role="dialog" aria-modal="true" aria-labelledby="vTitle">
+  <div class="win">
+    <div class="titlebar"><span>🖼</span><span class="t" id="vTitle">IMG.JPG — Picture Viewer</span><div class="tb-btns"><span class="x" id="vX" role="button" tabindex="0" aria-label="Close" style="cursor:pointer">✕</span></div></div>
+    <div class="stage"><img id="vImg" alt=""></div>
+    <div class="vbar">
+      <button class="btn" id="vPrev">◀ Prev</button>
+      <span id="vCap"></span>
+      <button class="btn" id="vNext">Next ▶</button>
+      <button class="btn" id="vClose">Close</button>
+    </div>
+  </div>
+</div>
+
+<div class="taskbar">
+  <a class="start" href="#home" data-go="home">🍸 cheers</a>
+  <div class="task">🌐 A.C.A.B — Cocktail Navigator</div>
+  <div class="task" style="background:#c62a42;border-color:#ff9aa8">✉ invitation_vol3.eml</div>
+  <div class="tray"><span>🔊</span><span id="clock">--:--</span></div>
+</div>
+
+<script>
+const SETS={
+  ch1:[
+    ['ch1_poster','INVITE_01.JPG','The Chapter 01 invite: All Cancers Are Buajingan party, 27.06.2026'],
+    ['ch1_dj','DECKS.JPG','On the decks',true],
+    ['ch1_disco','DISCO.JPG','Disco balls and blue stars'],
+    ['ch1_a','IMG_0001.JPG','First dance moves of the night'],
+    ['ch1_b','IMG_0002.JPG','The living room filling up'],
+    ['ch1_c','IMG_0003.JPG','Thumbs up, peace signs'],
+    ['ch1_d','IMG_0004.JPG','Behind the decks'],
+    ['ch1_e','IMG_0005.JPG','Floor-level gossip'],
+    ['ch1_f','IMG_0006.JPG','By the window'],
+    ['ch1_g','IMG_0007.JPG','Late-night crew'],
+  ],
+  ch2:[
+    ['ch2_poster','VOL2_INVITE.JPG','See you underwater: the vol.2 invite'],
+    ['ch2_stars','STARS.JPG','Star balloons, round two'],
+    ['ch2_a','IMG_0101.JPG','Arrivals'],
+    ['ch2_b','IMG_0102.JPG','A much bigger room this time'],
+    ['ch2_bar','BAR.JPG','Behind the bar'],
+    ['ch2_mocktail','NO_BOOZE.JPG','The NO BOOZE menu'],
+    ['ch2_fish','FISH.JPG','For some reason, fish'],
+    ['ch2_c','IMG_0103.JPG','Familiar faces',true],
+    ['ch2_d','IMG_0104.JPG','Plenty of new ones',true],
+    ['ch2_e','IMG_0105.JPG','Somehow we did it all over again'],
+  ],
+  ch3:[['ch3_poster','VOL3_INVITE.JPG','Volume 3: 12.12, free flow cocktails']]
+};
+// build explorers
+document.querySelectorAll('.files').forEach(box=>{
+  const set=box.dataset.set;
+  SETS[set].forEach((it,i)=>{
+    const b=document.createElement('button');b.className='thumb'+(it[3]?' blue':'');
+    b.innerHTML=`<div class="pol"><img loading="lazy" src="img/${it[0]}.jpg" alt="${it[2]}"></div><span class="fn">${it[1]}</span>`;
+    b.onclick=()=>openV(set,i);
+    box.appendChild(b);
+  });
+});
+// viewer
+const V=document.getElementById('viewer');let cur={set:null,i:0},lastFocus=null;
+function showV(){const it=SETS[cur.set][cur.i];
+  vImg.src=`img/${it[0]}.jpg`;vImg.alt=it[2];vTitle.textContent=`${it[1]} — Picture Viewer`;
+  vCap.textContent=`${it[2]}  (${cur.i+1}/${SETS[cur.set].length})`;
+  vPrev.disabled=vNext.disabled=SETS[cur.set].length<2;}
+function openV(set,i){lastFocus=document.activeElement;cur={set,i};showV();V.classList.add('open');vClose.focus();}
+function closeV(){V.classList.remove('open');lastFocus&&lastFocus.focus();}
+function step(d){const n=SETS[cur.set].length;cur.i=(cur.i+d+n)%n;showV();}
+vPrev.onclick=()=>step(-1);vNext.onclick=()=>step(1);vClose.onclick=closeV;vX.onclick=closeV;
+vX.onkeydown=e=>{if(e.key==='Enter')closeV()};
+V.onclick=e=>{if(e.target===V)closeV()};
+document.addEventListener('keydown',e=>{if(!V.classList.contains('open'))return;
+  if(e.key==='Escape')closeV();if(e.key==='ArrowLeft')step(-1);if(e.key==='ArrowRight')step(1);});
+document.querySelector('.poster').onclick=()=>openV('ch3',0);
+
+// navigation + fake address bar
+const PAGES={home:'index.html',story:'our_story.txt',ch1:'chapter01/',ch2:'chapter02/underwater/',ch3:'chapter03/invitation_vol3.html',guestbook:'guestbook.html'};
+const hist=['home'];let hpos=0,navLock=false;
+function setURL(id){url.textContent='http://www.allcocktailsarebeautiful.net/'+PAGES[id];
+  document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('active',a.dataset.go===id));}
+function go(id,push=true){if(!PAGES[id])id='home';
+  document.body.dataset.view=id;
+  const el=document.getElementById(id);el.classList.remove('show');void el.offsetWidth;el.classList.add('show');
+  loadBar();setURL(id);status.textContent='Opening '+PAGES[id]+'…';
+  if(push){hist.splice(hpos+1);hist.push(id);hpos=hist.length-1;try{history.replaceState(null,'',id==='home'?location.pathname:'#'+id)}catch(e){}}
+  document.querySelector('.viewport').scrollIntoView({behavior:'smooth',block:'start'});}
+document.addEventListener('click',e=>{const a=e.target.closest('[data-go]');if(!a)return;e.preventDefault();go(a.dataset.go);});
+
+// status-bar progress
+const prog=document.getElementById('prog');for(let i=0;i<10;i++)prog.appendChild(document.createElement('i'));
+const status=document.getElementById('status');
+function loadBar(done){const bars=[...prog.children];let k=0;bars.forEach(b=>b.classList.remove('on'));
+  const t=setInterval(()=>{if(k<bars.length){bars[k++].classList.add('on')}else{clearInterval(t);bars.forEach(b=>b.classList.remove('on'));status.textContent='Done';}},35);
+  done&&done();}
+// loader
+const loader=document.getElementById('loader'),lbar=document.getElementById('lbar');
+function runLoader(){loader.classList.remove('done');lbar.innerHTML='';let n=0;
+  const t=setInterval(()=>{lbar.appendChild(document.createElement('i'));if(++n>=20){clearInterval(t);setTimeout(()=>loader.classList.add('done'),180)}},45);}
+runLoader();
+
+// acronym swap
+const swap=document.getElementById('swap');let flipT;
+function autoflip(){swap.classList.add('flip');}
+setTimeout(autoflip,1600);
+swap.onclick=()=>swap.classList.toggle('flip');swap.style.cursor='pointer';
+
+// countdown to 12.12.2026 20:00 WIB
+const target=Date.parse('2026-12-12T20:00:00+07:00');
+function tick(){let d=Math.max(0,target-Date.now());
+  if(d===0){cd.innerHTML='<div style="min-width:auto;padding:10px 14px"><b style="font-size:30px">IT\'S PARTY TIME 🍸</b></div>';return;}
+  const pad=n=>String(n).padStart(2,'0');
+  cdD.textContent=Math.floor(d/864e5);cdH.textContent=pad(Math.floor(d/36e5)%24);
+  cdM.textContent=pad(Math.floor(d/6e4)%60);cdS.textContent=pad(Math.floor(d/1e3)%60);}
+tick();setInterval(tick,1000);
+
+// clock + now spinning
+function clk(){const n=new Date();clock.textContent=n.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});}
+clk();setInterval(clk,15000);
+const djs=['Laszlow','Aksilagaa','Shirosabre'];let dj=0;
+setInterval(()=>{dj=(dj+1)%3;np.textContent='▶ '+djs[dj];},4000);
+
+// fish school for chapter 02
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(!reduce){const s=document.getElementById('school');
+  for(let i=0;i<9;i++){const f=document.createElement('i');f.textContent=i%3?'🐟':'🐠';
+    f.style.top=(5+Math.random()*88)+'%';f.style.animationDuration=(14+Math.random()*16)+'s';
+    f.style.animationDelay=(-Math.random()*25)+'s';f.style.fontSize=(14+Math.random()*16)+'px';s.appendChild(f);}
+  // sparkle cursor trail
+  let last=0;document.addEventListener('mousemove',e=>{const now=Date.now();if(now-last<45)return;last=now;
+    const sp=document.createElement('span');sp.className='spark';sp.textContent=['✦','✧','⋆','·'][Math.floor(Math.random()*4)];
+    sp.style.left=e.clientX+6+'px';sp.style.top=e.clientY+6+'px';document.body.appendChild(sp);setTimeout(()=>sp.remove(),900);});
+}
+// open on hash
+(()=>{const h=location.hash.slice(1);if(PAGES[h]&&h!=='home'){document.body.dataset.view=h;setURL(h);}else setURL('home');})();
+window.addEventListener('hashchange',()=>{const h=location.hash.slice(1);if(PAGES[h])go(h,false)});
+
+// ---------- volume 3 tally ----------
+// Live counts come from a Netlify Function at /api/tally (see netlify/functions/tally.mjs).
+// Where that isn't available (e.g. this preview), it runs in demo mode in this browser only.
+const T_KEY='acab_vol3_vote';
+let tallyLive=false, counts={friends:0,maybe:0};
+function myVote(){try{return localStorage.getItem(T_KEY)}catch(e){return null}}
+function renderTally(bump){
+  tFriends.textContent=String(counts.friends).padStart(3,'0');
+  tMaybe.textContent=String(counts.maybe).padStart(3,'0');
+  const v=myVote();
+  document.querySelectorAll('.t-box').forEach(b=>{b.classList.toggle('mine',b.dataset.g===v);
+    if(bump&&b.dataset.g===bump){b.classList.add('bump');setTimeout(()=>b.classList.remove('bump'),250)}});
+  document.querySelectorAll('.bn[data-vote]').forEach(b=>b.classList.toggle('voted',b.dataset.vote===v));
+  tHint.textContent=v?(v==='friends'?"You're in: Let's be Friends 🤝":"You're in: Can we? Maybe... 💚")+(tallyLive?'':' (preview: counts stay in this browser)'):'Tap one of the ads up top to join a group ↑';
+}
+async function loadTally(){
+  try{const r=await fetch('/api/tally',{cache:'no-store'});if(!r.ok)throw 0;const d=await r.json();
+    if(typeof d.friends!=='number')throw 0;counts=d;tallyLive=true;}
+  catch(e){tallyLive=false;try{counts=JSON.parse(localStorage.getItem('acab_vol3_demo'))||counts}catch(_){}}
+  renderTally();
+}
+async function vote(g){
+  const prev=myVote();
+  if(prev===g){document.getElementById('tally').scrollIntoView({behavior:'smooth',block:'center'});return;}
+  if(tallyLive){
+    try{const r=await fetch('/api/tally',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({group:g,prev})});
+      if(r.ok)counts=await r.json();}catch(e){}
+  }else{
+    if(prev&&counts[prev]>0)counts[prev]--;counts[g]++;
+    try{localStorage.setItem('acab_vol3_demo',JSON.stringify(counts))}catch(e){}
+  }
+  try{localStorage.setItem(T_KEY,g)}catch(e){}
+  renderTally(g);
+  document.getElementById('tally').scrollIntoView({behavior:'smooth',block:'center'});
+}
+document.querySelectorAll('.bn[data-vote]').forEach(b=>b.addEventListener('click',()=>vote(b.dataset.vote)));
+loadTally();setInterval(()=>{if(tallyLive&&!document.hidden)loadTally()},30000);
+</script>
+</body>
+</html>
