@@ -321,6 +321,34 @@ main section.show{animation:pop .25s ease-out}
 
   .tally{grid-template-columns:1fr}
 }
+
+/* RSVP */
+.cta .rsvp{cursor:pointer;font-size:20px;padding:12px 34px;animation:rsvpBlink 1s steps(1) infinite}
+@keyframes rsvpBlink{50%{background:var(--yellow);border-color:#fffbb0 #8a8500 #8a8500 #fffbb0}}
+.lineup a.where{color:var(--yellow);text-decoration:underline}
+.rmodal{position:fixed;inset:0;z-index:150;display:none;align-items:center;justify-content:center;padding:14px;background:rgba(5,8,40,.7)}
+.rmodal.open{display:flex}
+.xpwin{background:#c0c0c0;border:2px solid;border-color:#fff #404040 #404040 #fff;box-shadow:0 0 0 1px #000,6px 6px 0 rgba(0,0,0,.5);width:min(420px,94vw);font-family:"Courier New",monospace;color:#000}
+.xpbar{display:flex;align-items:center;justify-content:space-between;background:#00008a;color:#fff;padding:5px 6px 5px 10px;font-weight:bold;font-size:16px}
+.xpx{all:unset;cursor:pointer;width:22px;height:20px;display:grid;place-items:center;background:#c0c0c0;color:#000;border:2px solid;border-color:#fff #404040 #404040 #fff;font:bold 13px Tahoma}
+.xpbody{padding:16px}
+.xpbody label{display:block;margin-bottom:8px;font-size:14px}
+.xpbody input{width:100%;font:16px "Courier New",monospace;padding:6px;border:2px solid;border-color:#404040 #fff #fff #404040;background:#fff}
+.hp{position:absolute!important;left:-9999px;width:1px!important}
+.xperr{color:#b00;font-size:12px;min-height:16px;margin-top:6px}
+.xpbtns{display:flex;justify-content:center;gap:14px;margin-top:10px}
+.xpbtn{font:bold 16px "Courier New",monospace;min-width:110px;padding:6px 14px;background:#c0c0c0;border:2px solid;border-color:#fff #404040 #404040 #fff;box-shadow:0 0 0 1px #000;cursor:pointer}
+.xpbtn:active{border-color:#404040 #fff #fff #404040}
+.done .card{width:min(440px,94vw);display:flex;flex-direction:column;gap:8px}
+.ticker{display:block;overflow:hidden;white-space:nowrap;background:#000;color:var(--yellow);border:2px solid var(--yellow);font-family:"Silkscreen";font-size:12px;padding:6px 0;text-decoration:none}
+.ticker div{display:inline-block;animation:tick 16s linear infinite}
+@keyframes tick{to{transform:translateX(-50%)}}
+.shot{position:relative;border:3px solid #000}
+.shot img{width:100%;display:block}
+.shot .sys{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);width:86%}
+.sys .xpbar{font-size:clamp(13px,3.6vw,17px)}
+.cap{background:#eef1f8;border:2px solid #8fa0c8;outline:1px solid #fff;padding:4px}
+.cap canvas{width:100%;height:auto;display:block}
 </style>
 </head>
 <body data-view="home">
@@ -500,10 +528,10 @@ main section.show{animation:pop .25s ease-out}
                   <dt>WHEN</dt><dd>Saturday 12 · 12 · 2026, music starts 20.00</dd>
                   <dt>TUNES BY</dt><dd>Laszlow · Aksilagaa · Shirosabre</dd>
                   <dt>ENTRY</dt><dd>IDR 200K, with free flow cocktails</dd>
-                  <dt>WHERE</dt><dd>DM us for the details</dd>
+                  <dt>WHERE</dt><dd><a class="where" href="https://maps.app.goo.gl/a5pvYLJudrfxPGhE7?g_st=ic" target="_blank" rel="noopener">The Masterpiece Condominium, Epicentrum ↗</a></dd>
                 </dl>
                 <div class="cta">
-                  <a class="big" href="https://www.instagram.com/allcocktailsarebeautiful__/" target="_blank" rel="noopener">▶ RSVP ON INSTAGRAM</a>
+                  <button class="big rsvp" id="rsvpBtn" type="button">▶ RSVP</button>
                 </div>
                 <div class="tally" id="tally" aria-live="polite">
                   <div class="t-box t-red" data-g="friends"><div class="t-name">Let's be Friends</div><div class="t-num" id="tFriends">--</div><div class="t-sub">coming</div></div>
@@ -552,6 +580,40 @@ main section.show{animation:pop .25s ease-out}
 </div>
 
 <!-- viewer -->
+<!-- RSVP: hidden form so Netlify Forms detects it -->
+<form name="rsvp" data-netlify="true" netlify-honeypot="bot-field" hidden>
+  <input name="name"><input name="bot-field">
+</form>
+
+<div id="rsvpAsk" class="rmodal" role="dialog" aria-modal="true" aria-labelledby="askT">
+  <form class="xpwin" id="askForm" autocomplete="off">
+    <div class="xpbar"><span id="askT">RSVP — Volume 3</span><button type="button" class="xpx" data-close aria-label="Close">✕</button></div>
+    <div class="xpbody">
+      <label for="askName">Enter your name to confirm attendance:</label>
+      <input id="askName" name="name" maxlength="24" required placeholder="your name">
+      <input name="bot-field" class="hp" tabindex="-1" aria-hidden="true">
+      <div class="xperr" id="askErr"></div>
+      <div class="xpbtns"><button class="xpbtn" type="submit">Enter</button></div>
+    </div>
+  </form>
+</div>
+
+<div id="rsvpDone" class="rmodal done" role="dialog" aria-modal="true" aria-labelledby="doneT">
+  <div class="card">
+    <a class="ticker" href="https://www.instagram.com/allcocktailsarebeautiful__/" target="_blank" rel="noopener"><div>★ SCREENSHOT AND POST ON YOUR STORY WITH @allcocktailsarebeautiful__ ★ SCREENSHOT AND POST ON YOUR STORY WITH @allcocktailsarebeautiful__ ★&nbsp;</div></a>
+    <div class="shot">
+      <img src="img/ch3_poster.jpg" alt="">
+      <div class="xpwin sys">
+        <div class="xpbar"><span id="doneT">Attendance Confirmed</span><button type="button" class="xpx" data-close aria-label="Close">✕</button></div>
+        <div class="xpbody">
+          <div class="cap"><canvas id="capCv" width="560" height="140" role="img"></canvas></div>
+          <div class="xpbtns"><button class="xpbtn ok" type="button" data-close>Ok</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="viewer" role="dialog" aria-modal="true" aria-labelledby="vTitle">
   <div class="win">
     <div class="titlebar"><span>🖼</span><span class="t" id="vTitle">IMG.JPG — Picture Viewer</span><div class="tb-btns"><span class="x" id="vX" role="button" tabindex="0" aria-label="Close" style="cursor:pointer">✕</span></div></div>
@@ -724,6 +786,43 @@ async function vote(g){
 }
 document.querySelectorAll('.bn[data-vote]').forEach(b=>b.addEventListener('click',()=>vote(b.dataset.vote)));
 loadTally();setInterval(()=>{if(tallyLive&&!document.hidden)loadTally()},30000);
+
+// ---------- RSVP ----------
+const ask=document.getElementById('rsvpAsk'),done=document.getElementById('rsvpDone');
+function openM(m){m.classList.add('open');const f=m.querySelector('input:not(.hp),.ok');f&&f.focus();}
+function closeM(m){m.classList.remove('open');rsvpBtn.focus();}
+rsvpBtn.onclick=()=>{askErr.textContent='';openM(ask);};
+document.querySelectorAll('.rmodal [data-close]').forEach(b=>b.onclick=()=>closeM(b.closest('.rmodal')));
+document.querySelectorAll('.rmodal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)closeM(m)}));
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.rmodal.open').forEach(closeM)});
+function drawCaptcha(name){
+  const cv=capCv,c=cv.getContext('2d'),W=cv.width,H=cv.height;
+  c.clearRect(0,0,W,H);c.fillStyle='#eef1f8';c.fillRect(0,0,W,H);
+  for(let i=0;i<260;i++){c.fillStyle=`rgba(40,50,120,${Math.random()*.18})`;c.fillRect(Math.random()*W,Math.random()*H,2,2);}
+  const t=name.toUpperCase().slice(0,24),n=t.length;
+  const fs=Math.min(118,Math.max(34,(W-40)/(n*0.66)));
+  const fonts=['Georgia','Times New Roman','Arial','Courier New','Verdana'];
+  let x=(W-n*fs*0.62)/2+fs*0.3;
+  for(const ch of t){
+    c.save();c.translate(x,H/2+(Math.random()-.5)*H*0.22);c.rotate((Math.random()-.5)*0.75);
+    c.font=`${Math.random()<.5?'bold ':''}${fs*(0.85+Math.random()*0.3)}px ${fonts[Math.floor(Math.random()*fonts.length)]}`;
+    c.fillStyle='#1d2a7a';c.textAlign='center';c.textBaseline='middle';c.fillText(ch,0,0);c.restore();
+    x+=fs*0.62;
+  }
+  c.strokeStyle='#1d2a7a';
+  for(let i=0;i<4;i++){c.lineWidth=2+Math.random()*2;c.beginPath();
+    const y=H*(0.25+Math.random()*0.5);c.moveTo(Math.random()*W*0.3,y);
+    c.bezierCurveTo(W*0.35,y+(Math.random()-.5)*H*0.8,W*0.65,y+(Math.random()-.5)*H*0.8,W*(0.7+Math.random()*0.3),H*(0.25+Math.random()*0.5));c.stroke();}
+  cv.setAttribute('aria-label','Your name: '+name);
+}
+askForm.onsubmit=async e=>{
+  e.preventDefault();
+  const name=askName.value.trim().replace(/\s+/g,' ');
+  if(!name){askErr.textContent='Please type your name.';return;}
+  const body=new URLSearchParams({'form-name':'rsvp',name,'bot-field':askForm.elements['bot-field'].value});
+  try{await fetch('/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()});}catch(err){}
+  ask.classList.remove('open');drawCaptcha(name);openM(done);
+};
 </script>
 </body>
 </html>
