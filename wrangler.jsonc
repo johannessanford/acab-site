@@ -1,0 +1,7 @@
+{
+  "name": "acab-site",
+  "main": "worker.js",
+  "compatibility_date": "2026-11-01",
+  "assets": { "directory": ".", "binding": "ASSETS", "run_worker_first": ["/api/*"] },
+  "kv_namespaces": [{ "binding": "ACAB", "id": "55aa53c4ae504bd49cad1528d640bd6f" }]
+}
