@@ -349,6 +349,8 @@ main section.show{animation:pop .25s ease-out}
 .sys .xpbar{font-size:clamp(13px,3.6vw,17px)}
 .cap{background:#eef1f8;border:2px solid #8fa0c8;outline:1px solid #fff;padding:4px}
 .cap canvas{width:100%;height:auto;display:block}
+.ignote{font:12px Tahoma,sans-serif;color:#222;text-align:center;margin-top:8px;min-height:0}
+.ignote:empty{display:none}
 </style>
 </head>
 <body data-view="home">
@@ -600,14 +602,14 @@ main section.show{animation:pop .25s ease-out}
 
 <div id="rsvpDone" class="rmodal done" role="dialog" aria-modal="true" aria-labelledby="doneT">
   <div class="card">
-    <a class="ticker" href="https://www.instagram.com/allcocktailsarebeautiful__/" target="_blank" rel="noopener"><div>★ SCREENSHOT AND POST ON YOUR STORY WITH @allcocktailsarebeautiful__ ★ SCREENSHOT AND POST ON YOUR STORY WITH @allcocktailsarebeautiful__ ★&nbsp;</div></a>
     <div class="shot">
       <img src="img/ch3_poster.jpg" alt="">
       <div class="xpwin sys">
         <div class="xpbar"><span id="doneT">Attendance Confirmed</span><button type="button" class="xpx" data-close aria-label="Close">✕</button></div>
         <div class="xpbody">
           <div class="cap"><canvas id="capCv" width="560" height="140" role="img"></canvas></div>
-          <div class="xpbtns"><button class="xpbtn ok" type="button" data-close>Ok</button></div>
+          <div class="xpbtns"><button class="xpbtn ok" type="button" id="igBtn">IG Story</button></div>
+          <div class="ignote" id="igNote"></div>
         </div>
       </div>
     </div>
@@ -823,7 +825,53 @@ askForm.onsubmit=async e=>{
   try{const r=await fetch('/api/rsvp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,botField:askForm.elements['bot-field'].value})});
     if(!r.ok)throw 0;}
   catch(err){try{await fetch('/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body.toString()});}catch(_){}}
-  ask.classList.remove('open');drawCaptcha(name);openM(done);
+  ask.classList.remove('open');lastName=name;drawCaptcha(name);openM(done);
+};
+
+// ---------- IG story image ----------
+let lastName='';
+function loadImg(src){return new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=src;});}
+async function buildStory(){
+  const W=1080,H=1920,cv=document.createElement('canvas');cv.width=W;cv.height=H;const c=cv.getContext('2d');
+  const p=await loadImg('img/ch3_poster.jpg');
+  const sc=Math.max(W/p.width,H/p.height),pw=p.width*sc,ph=p.height*sc;
+  c.drawImage(p,(W-pw)/2,(H-ph)/2,pw,ph);
+  // window
+  const ww=900,x=(W-ww)/2,y=560,tb=86,bodyH=420,wh=tb+bodyH;
+  c.fillStyle='rgba(0,0,0,.45)';c.fillRect(x+14,y+14,ww,wh);
+  c.fillStyle='#c0c0c0';c.fillRect(x,y,ww,wh);
+  c.fillStyle='#fff';c.fillRect(x,y,ww,4);c.fillRect(x,y,4,wh);
+  c.fillStyle='#404040';c.fillRect(x,y+wh-4,ww,4);c.fillRect(x+ww-4,y,4,wh);
+  c.fillStyle='#00008a';c.fillRect(x+6,y+6,ww-12,tb-6);
+  c.fillStyle='#fff';c.font='bold 44px "Courier New",monospace';c.textBaseline='middle';c.fillText('Attendance Confirmed',x+30,y+6+(tb-6)/2);
+  const bx=x+ww-76,by=y+16;c.fillStyle='#c0c0c0';c.fillRect(bx,by,56,50);c.fillStyle='#000';c.font='bold 34px Tahoma,sans-serif';c.textAlign='center';c.fillText('✕',bx+28,by+27);c.textAlign='left';
+  // captcha box
+  const cx=x+40,cy=y+tb+36,cw=ww-80,ch=cw*140/560;
+  c.fillStyle='#8fa0c8';c.fillRect(cx-6,cy-6,cw+12,ch+12);c.fillStyle='#fff';c.fillRect(cx-3,cy-3,cw+6,ch+6);
+  c.drawImage(capCv,cx,cy,cw,ch);
+  // YES! button
+  const btw=300,bth=96,btx=x+(ww-btw)/2,bty=cy+ch+40;
+  c.fillStyle='#000';c.fillRect(btx-3,bty-3,btw+6,bth+6);
+  c.fillStyle='#c0c0c0';c.fillRect(btx,bty,btw,bth);
+  c.fillStyle='#fff';c.fillRect(btx,bty,btw,4);c.fillRect(btx,bty,4,bth);
+  c.fillStyle='#404040';c.fillRect(btx,bty+bth-4,btw,4);c.fillRect(btx+btw-4,bty,4,bth);
+  c.fillStyle='#000';c.font='bold 52px "Courier New",monospace';c.textAlign='center';c.fillText('YES!',btx+btw/2,bty+bth/2+2);
+  return new Promise(r=>cv.toBlob(r,'image/png'));
+}
+igBtn.onclick=async()=>{
+  igNote.textContent='';igBtn.disabled=true;const label=igBtn.textContent;igBtn.textContent='Preparing…';
+  try{
+    const blob=await buildStory();
+    const file=new File([blob],'acab-vol3-'+(lastName||'rsvp').replace(/[^a-z0-9]+/gi,'-').toLowerCase()+'.png',{type:'image/png'});
+    if(navigator.canShare&&navigator.canShare({files:[file]})){
+      try{await navigator.share({files:[file]});}catch(e){if(e.name!=='AbortError')throw e;}
+    }else{
+      const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=file.name;document.body.appendChild(a);a.click();a.remove();
+      setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+      igNote.textContent='Image saved. Post it to your Instagram story from your phone and tag @allcocktailsarebeautiful__';
+    }
+  }catch(e){igNote.textContent='Couldn\'t open sharing here. Take a screenshot instead and post it to your story.';}
+  igBtn.disabled=false;igBtn.textContent=label;
 };
 </script>
 </body>
